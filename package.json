@@ -1,0 +1,20 @@
+{
+  "name": "nimble-scroll",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "npm run build -w @nimble-ui/build",
+    "docs:dev": "pnpm -C docs dev"
+  },
+  "keywords": [],
+  "author": "Chen Yu Yun",
+  "license": "ISC",
+  "workspaces": [
+    "packages/move",
+    "build"
+  ],
+  "dependencies": {
+    "@nimble-ui/common": "workspace:^",
+    "@nimble-ui/utils": "workspace:^"
+  }
+}
