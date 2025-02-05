@@ -1,9 +1,9 @@
 import { move } from "@nimble-ui/move";
 import { ScrollOptions, ElementType } from "@nimble-ui/common";
-import { initialize } from "./createElement";
+import { initialize } from "./initialize";
 
 export function scrollbar(el: ElementType, options: ScrollOptions) {
-  const { init, destroy } = initialize(el, options);
+  const { data, init, destroy } = initialize(el, options);
 
   move(el, {
     init,

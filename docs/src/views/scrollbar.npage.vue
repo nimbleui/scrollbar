@@ -1,11 +1,11 @@
 <template>
   <div ref="warpRef" class="warp">
-    <div class="content" data-scrollbar-content>
+    <div class="content">
       <div
         v-for="item in list"
         :key="item.id"
         :data-drag-id="item.id"
-        class="move"
+        class="move css"
       >
       {{ item.title }}
       </div>
@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { reactive, ref, onBeforeUnmount } from 'vue';
 import { scrollbar } from "@nimble-ui/scrollbar"
 
 defineOptions({ name: 'move' });
@@ -37,10 +37,10 @@ setTimeout(() => {
 
 const warpRef = ref<HTMLElement>();
 const getEl = () => warpRef.value;
-scrollbar(getEl, {
+const { destroy } = scrollbar(getEl, {
   
 })
-
+onBeforeUnmount(destroy)
 </script>
 
 <style lang="scss">
@@ -50,6 +50,10 @@ scrollbar(getEl, {
   background-color: rgb(117, 107, 255);
   overflow: auto;
   height: 400px;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   .move {
     width: 150px;
