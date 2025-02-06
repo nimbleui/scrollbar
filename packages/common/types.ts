@@ -5,6 +5,7 @@ export type ElementType = TypesFun<Element>;
 export interface ScrollOptions {
   always?: boolean;
   minSize?: number;
+  content: Element | (() => Element);
 }
 
 export interface ScrollbarBarInfo {
@@ -14,4 +15,6 @@ export interface ScrollbarBarInfo {
   height?: number;
   xShow: boolean;
   yShow: boolean;
+  moveX?: number;
+  moveY?: number;
 }

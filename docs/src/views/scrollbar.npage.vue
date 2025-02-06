@@ -1,6 +1,6 @@
 <template>
   <div ref="warpRef" class="warp">
-    <div class="content">
+    <div ref="contentRef" class="content">
       <div
         v-for="item in list"
         :key="item.id"
@@ -36,9 +36,10 @@ setTimeout(() => {
 }, 3000)
 
 const warpRef = ref<HTMLElement>();
+const contentRef = ref<HTMLElement>();
 const getEl = () => warpRef.value;
 const { destroy } = scrollbar(getEl, {
-  
+  content: () => contentRef.value!,
 })
 onBeforeUnmount(destroy)
 </script>
@@ -46,26 +47,11 @@ onBeforeUnmount(destroy)
 <style lang="scss">
 .warp {
   width: 500px;
-  position: relative;
-  background-color: rgb(117, 107, 255);
-  overflow: auto;
   height: 400px;
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
 
   .move {
     width: 150px;
     height: 50px;
-  }
-
-  .content {
-    position: absolute;
-    left: 50px;
-    top: 25px;
-    width: 50%;
-    height: 50%;
   }
 }
 </style>

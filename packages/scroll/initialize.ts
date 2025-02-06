@@ -1,93 +1,48 @@
-import { GAP, ElementType, SCROLL_BAR, SCROLL_THUMB, type ScrollbarBarInfo, type ScrollOptions } from "@nimble-ui/common";
-import { isFunctionOrValue, css } from "@nimble-ui/utils";
-
-function createBarEl(warp: Element) {
-  const scrollbarV = document.createElement('div');
-  const scrollbarThumbV = document.createElement('div');
-  const scrollbarH = document.createElement('div');
-  const scrollbarThumbH = document.createElement('div');
-
-  scrollbarV.classList.add('scrollbar-bar');
-  scrollbarV.classList.add('is-vertical');
-  scrollbarH.classList.add('scrollbar-bar');
-  scrollbarH.classList.add('is-horizontal');
-
-  // 设置标识
-  scrollbarV.setAttribute(SCROLL_BAR, 'vertical');
-  scrollbarH.setAttribute(SCROLL_BAR, 'horizontal');
-  scrollbarThumbV.setAttribute(SCROLL_THUMB, 'vertical');
-  scrollbarThumbH.setAttribute(SCROLL_THUMB, 'horizontal');
-
-  scrollbarV.appendChild(scrollbarThumbV);
-  scrollbarH.appendChild(scrollbarThumbH);
-
-  // 文档碎片
-  const fragment = document.createDocumentFragment();
-  fragment.appendChild(scrollbarV);
-  fragment.appendChild(scrollbarH);
-  warp.appendChild(fragment);
-  css()
-}
-
-export function getBarEl(warp: Element) {
-  const barV = warp.querySelector(`[${SCROLL_BAR}='vertical']`);
-  const barH = warp.querySelector(`[${SCROLL_BAR}='horizontal']`);
-  const thumbV = warp.querySelector(`[${SCROLL_THUMB}='vertical']`);
-  const thumbH = warp.querySelector(`[${SCROLL_THUMB}='horizontal']`);
-  
-  return { barH, barV, thumbH, thumbV };
-}
-
-function showOrHideBar(warp: HTMLElement, options: ScrollOptions, callback: (val: ScrollbarBarInfo) => void) {
-  const { minSize = 20 } = options;
-  const offsetWidth = warp.offsetWidth - GAP;
-  const offsetHeight = warp.offsetHeight - GAP;
-
-  const w = offsetWidth ** 2 / warp.scrollWidth;
-  const h = offsetHeight ** 2 / warp.scrollHeight;
-  const width = Math.max(w, minSize);
-  const height = Math.max(h, minSize);
-  const ratioX = w / (offsetWidth - w) / (width / (offsetWidth / width));
-  const ratioY = h / (offsetHeight - h) / (height / (offsetHeight / height));
-
-  const xShow = width + GAP < offsetWidth;
-  const yShow = height + GAP < offsetHeight;
-
-  callback({ ratioX, ratioY, xShow, yShow, width, height });
-}
+import { GAP, ElementType, type ScrollbarBarInfo, type ScrollOptions } from "@nimble-ui/common";
+import { isFunctionOrValue } from "@nimble-ui/utils";
+import { computeSize } from "./computeSize";
+import { handleElement } from "./handleElement";
 
 export function initialize(el: ElementType, options: ScrollOptions) {
   const data: ScrollbarBarInfo = { ratioY: 1, ratioX: 1, xShow: false, yShow: false };
 
-  const setData = (val: ScrollbarBarInfo) => {
+  // 处理元素
+  const { getBarEl, createBarEl } = handleElement(el, options)
+
+  const setData = (val: Partial<ScrollbarBarInfo>) => {
+    const { thumbH, thumbV } = getBarEl();
     Object.assign(data, val);
+    data.xShow && thumbH?.setAttribute('style', `width: ${data.width}px;transform: translateX(${data.moveX || 0}%);`);
+    data.yShow && thumbV?.setAttribute('style', `height: ${data.height}px;transform: translateY(${data.moveY || 0}%);`);
   };
 
   const observer = new MutationObserver(function () {
     const value = isFunctionOrValue(el);
-    if (value) showOrHideBar(value as HTMLElement, options, setData);
+    if (value) computeSize(options, setData);
   })
 
-  const handleScroll = () => {
-    const warp = isFunctionOrValue(el);
-    if (!warp) return
-
-    warp.scrollTop
-
+  function handleScroll(this: HTMLElement) {
+    const offsetHeight = this.offsetHeight - GAP;
+    const offsetWidth = this.offsetWidth - GAP;
+    
+    const y = ((this.scrollTop * 100) / offsetHeight) * data.ratioY;
+    const x = ((this.scrollLeft * 100) / offsetWidth) * data.ratioX;
+    setData({ moveX: x, moveY: y });
   }
 
   const init = (warp: Element) => {
-    createBarEl(warp);
-    showOrHideBar(warp as HTMLElement, options, setData);
-    warp.addEventListener("scroll", handleScroll);
+    const content = isFunctionOrValue(options.content)
+    createBarEl();
+    computeSize(options, setData);
+    content.addEventListener("scroll", handleScroll);
     observer.observe(warp, { childList: true, subtree: true });
   }
 
   const destroy = () => {
     observer.disconnect();
-    const warp = isFunctionOrValue(el);
+    const warp = isFunctionOrValue(options.content);
     warp?.removeEventListener('scroll', handleScroll);
   }
 
-  return { data, init, destroy };
+  return { data, init, destroy, getBarEl };
 }
