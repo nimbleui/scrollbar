@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "npm run build -w @nimble-ui/build",
+    "build": "pnpm -C build build",
     "docs:dev": "pnpm -C docs dev"
   },
   "keywords": [],

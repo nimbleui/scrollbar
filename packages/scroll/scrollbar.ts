@@ -1,6 +1,6 @@
 import { move } from "@nimble-ui/move";
 import { isFunctionOrValue } from "@nimble-ui/utils";
-import { ScrollOptions, ElementType, MAP, SCROLL_BAR } from "@nimble-ui/common";
+import { ScrollOptions, ElementType, MAP } from "@nimble-ui/common";
 import { initialize } from "./initialize";
 
 export function scrollbar(el: ElementType, options: ScrollOptions) {
@@ -25,14 +25,13 @@ export function scrollbar(el: ElementType, options: ScrollOptions) {
     }
   }
 
-
   move(el, {
+    prevent: true,
     init: (el) => {
       init(el);
       el.addEventListener('mouseenter', barShowOrHide);
       el.addEventListener('mouseleave', barShowOrHide);
     },
-    prevent: true,
     agencyTarget(el) {
       const { barV, thumbV, barH, thumbH } = getBarEl();
       if (el == barV || el == thumbV || el == barH || el == thumbH ) {

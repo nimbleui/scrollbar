@@ -22,8 +22,8 @@ export const handleElement = (el: ElementType, options: ScrollOptions) => {
     content.classList.add('scrollbar-warp__content');
 
     if (!options.always) {
-      scrollbarThumbV.style.display = 'none';
-      scrollbarThumbH.style.display = 'none';
+      scrollbarV.style.display = 'none';
+      scrollbarH.style.display = 'none';
     }
 
     // 设置标识
