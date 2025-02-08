@@ -98,7 +98,7 @@ interface ScrollOptions {
 ## scrollbar 暴露方法
 | 属性名         |        说明      | 类型                                                         |
 | ------------- | ---------------- | ------------------------------------------------------------ |
-| scrollTo      | 滚动到一组特定坐标 | (options: ScrollToOptions | number, yCoord?: number) => void |
-| setScrollSite | 设置滚动条的距离   | (scrollLeft: number, axis: 'x' | 'y') => void                |
+| scrollTo      | 滚动到一组特定坐标 | (options: ScrollToOptions \| number, yCoord?: number) => void |
+| setScrollSite | 设置滚动条的距离   | (scrollLeft: number, axis: 'x' \| 'y') => void                |
 | thumbColor    | 设置滚动条的颜色   | (color: string) => void                                      |
 | destroy       | 销毁绑定事件等     | () => void                                                   |
