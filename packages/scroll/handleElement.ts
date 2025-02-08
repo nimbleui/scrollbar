@@ -13,15 +13,18 @@ export const handleElement = (el: ElementType, options: ScrollOptions) => {
     const scrollbarH = document.createElement('div');
     const scrollbarThumbH = document.createElement('div');
 
-    scrollbarV.classList.add('scrollbar-bar');
-    scrollbarV.classList.add('is-vertical');
-    scrollbarH.classList.add('scrollbar-bar');
-    scrollbarH.classList.add('is-horizontal');
+    scrollbarV.classList.add('scrollbar-bar', 'is-vertical');
+    scrollbarH.classList.add('scrollbar-bar', 'is-horizontal');
     scrollbarThumbV.classList.add('scrollbar-thumb');
     scrollbarThumbH.classList.add('scrollbar-thumb');
 
     warp.classList.add('scrollbar-warp');
     content.classList.add('scrollbar-warp__content');
+
+    if (!options.always) {
+      scrollbarThumbV.style.display = 'none';
+      scrollbarThumbH.style.display = 'none';
+    }
 
     // 设置标识
     scrollbarV.setAttribute(SCROLL_BAR, 'vertical');
@@ -42,10 +45,10 @@ export const handleElement = (el: ElementType, options: ScrollOptions) => {
 
   function getBarEl() {
     const warp = isFunctionOrValue(el);
-    const barV = warp?.querySelector(`[${SCROLL_BAR}='vertical']`);
-    const barH = warp?.querySelector(`[${SCROLL_BAR}='horizontal']`);
-    const thumbV = warp?.querySelector(`[${SCROLL_THUMB}='vertical']`);
-    const thumbH = warp?.querySelector(`[${SCROLL_THUMB}='horizontal']`);
+    const barV = warp?.querySelector(`[${SCROLL_BAR}='vertical']`) as HTMLElement | null;
+    const barH = warp?.querySelector(`[${SCROLL_BAR}='horizontal']`) as HTMLElement | null;
+    const thumbV = warp?.querySelector(`[${SCROLL_THUMB}='vertical']`) as HTMLElement | null;
+    const thumbH = warp?.querySelector(`[${SCROLL_THUMB}='horizontal']`) as HTMLElement | null;
     
     return { barH, barV, thumbH, thumbV };
   }

@@ -40,6 +40,9 @@ const contentRef = ref<HTMLElement>();
 const getEl = () => warpRef.value;
 const { destroy } = scrollbar(getEl, {
   content: () => contentRef.value!,
+  onScroll(data) {
+    console.log(data);
+  },
 })
 onBeforeUnmount(destroy)
 </script>

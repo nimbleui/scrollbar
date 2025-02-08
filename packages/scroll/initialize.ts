@@ -12,8 +12,16 @@ export function initialize(el: ElementType, options: ScrollOptions) {
   const setData = (val: Partial<ScrollbarBarInfo>) => {
     const { thumbH, thumbV } = getBarEl();
     Object.assign(data, val);
-    data.xShow && thumbH?.setAttribute('style', `width: ${data.width}px;transform: translateX(${data.moveX || 0}%);`);
-    data.yShow && thumbV?.setAttribute('style', `height: ${data.height}px;transform: translateY(${data.moveY || 0}%);`);
+    if (data.xShow && thumbH) {
+      thumbH.style.width = `${data.width}px`;
+      thumbH.style.transform = `translateX(${data.moveX || 0}%)`;
+    }
+    if (data.yShow && thumbV) {
+      thumbV.style.height = `${data.height}px`;
+      thumbV.style.transform = `translateY(${data.moveY || 0}%)`;
+    }
+    const content = isFunctionOrValue(options.content)
+    options.onScroll?.({scrollTop: content.scrollTop, scrollLeft: content.scrollLeft})
   };
 
   const observer = new MutationObserver(function () {
@@ -40,8 +48,8 @@ export function initialize(el: ElementType, options: ScrollOptions) {
 
   const destroy = () => {
     observer.disconnect();
-    const warp = isFunctionOrValue(options.content);
-    warp?.removeEventListener('scroll', handleScroll);
+    const content = isFunctionOrValue(options.content);
+    content.removeEventListener('scroll', handleScroll);
   }
 
   return { data, init, destroy, getBarEl };
