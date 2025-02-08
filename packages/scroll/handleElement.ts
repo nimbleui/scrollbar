@@ -1,4 +1,4 @@
-import { ElementType, SCROLL_BAR, SCROLL_THUMB, ScrollOptions } from "@nimble-ui/common";
+import { type ElementType, SCROLL_BAR, SCROLL_THUMB, type ScrollOptions } from "@nimble-ui/common";
 import { setCss } from "./css";
 import { isFunctionOrValue } from "@nimble-ui/utils";
 

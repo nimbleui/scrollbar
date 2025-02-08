@@ -1,6 +1,6 @@
 import { move } from "@nimble-ui/move";
-import { isFunctionOrValue } from "@nimble-ui/utils";
-import { ScrollOptions, ElementType, MAP } from "@nimble-ui/common";
+import { isFunctionOrValue, isObject, isNumber } from "@nimble-ui/utils";
+import { type ScrollOptions, type ElementType, MAP } from "@nimble-ui/common";
 import { initialize } from "./initialize";
 
 export function scrollbar(el: ElementType, options: ScrollOptions) {
@@ -66,12 +66,38 @@ export function scrollbar(el: ElementType, options: ScrollOptions) {
     }
   })
 
+  function scrollTo(xCord: number, yCord?: number): void
+  function scrollTo(options: ScrollToOptions): void
+  function scrollTo(arg1: unknown, arg2?: number) {
+    const content = isFunctionOrValue(options.content);
+    if (isObject(arg1)) {
+      content!.scrollTo(arg1)
+    } else if (isNumber(arg1) && isNumber(arg2)) {
+      content!.scrollTo(arg1, arg2)
+    }
+  }
+
+  function setScrollSite(value: number, type: 'x' | 'y' = 'y') {
+    const content = isFunctionOrValue(options.content);
+    if (!isNumber(value)) {
+      return console.warn("请传入数字类型");
+    }
+    content[type == 'y' ? 'scrollTop' : 'scrollLeft'] = value
+  }
+
   return {
+    scrollTo,
+    setScrollSite,
+    thumbColor: (color: string) => {
+      const { thumbH, thumbV } = getBarEl();
+      thumbH && (thumbH.style.backgroundColor = color);
+      thumbV && (thumbV.style.backgroundColor = color);
+    },
     destroy: () => {
       destroy();
       const warp = isFunctionOrValue(el);
       warp?.removeEventListener('mouseenter', barShowOrHide);
       warp?.removeEventListener('mouseleave', barShowOrHide);
-    }
+    },
   }
 }

@@ -75,48 +75,30 @@ onBeforeUnmount(destroy)
 }
 </style>
 ```
-## move 参数
+## scrollbar 参数
 | 属性名  | 说明     | 类型                     | 默认 |
-| ------- | -------- | ------------------------ | ---- |
-| el      | 画布元素 | element \| () => element | -    |
-| options | 参数     | MoveBaseOptions                   | -    |
+| ------- | -------- | ----------------------- | ---- |
+| el      | 元素     | element \| () => element | -   |
+| options | 参数     | ScrollOptions            | -   |
 
-### MoveBaseOptions属性
+### ScrollOptions属性
 ```ts
-type MoveElType = Element | (() => Element | undefined | null);
-
-interface MoveBaseOptions {
-  boundary?: MoveElType | Window; // 拖拽的边界元素
-  prevent?: boolean; // 阻止默认事件
-  stop?: boolean; // 阻止事件冒泡
-  scale?: number | (() => number | undefined); // 缩放比例
-  expand?: number; // 边界元素扩大
-}
-
-interface MoveDataTypes {
-  startX: number; // 按下鼠标x轴位置
-  startY: number; // 按下鼠标y轴位置
-  moveX: number; // 移动鼠标x轴位置
-  moveY: number; // 移动鼠标y轴位置
-  disX: number; // 鼠标移动x轴的距离
-  disY: number; // 鼠标移动y轴的距离
-  endX: number; // 鼠标抬起x轴的距离
-  endY: number; // 鼠标抬起Y轴的距离
-  isMove: boolean; // 是否移动
-  target?: Element; // 当前移动的元素
-  binElement?: Element; // 绑定的元素
-}
-
-type MoveMouseTouchEvent = MouseEvent | TouchEvent;
-type MoveCallbackReturnValue = { down?: any; move?: any; up?: any };
-type MoveEventCallbackParam = MoveDataTypes & { e: MoveMouseTouchEvent, value: MoveCallbackReturnValue }
-
-interface MoveOptionsType extends MoveBaseOptions {
-  down?: (data: MoveEventCallbackParam, setValue: (data: any) => void) => void;
-  move?: (data: MoveEventCallbackParam, setValue: (data: any) => void) => void;
-  up?: (data: MoveEventCallbackParam, setValue: (data: any) => void) => void;
-  agencyTarget?: (el: Element) => Element | undefined | false | void; // 判断是否要代理
-  changeTarget?: (el: Element) => Element; // 改变目标元素
-  init?: (el: Element) => void; // 绑定按下事件时执行
+interface ScrollOptions {
+  // 总是显示
+  always?: boolean;
+  // 最小尺寸
+  minSize?: number;
+  // 内容元素 必填
+  content: Element | (() => Element);
+  // 当触发滚动事件时，返回滚动的距离
+  onScroll?: (data: { scrollLeft: number; scrollTop: number }) => void;
 }
 ```
+
+## scrollbar 暴露方法
+| 属性名         |        说明      | 类型                                                         |
+| ------------- | ---------------- | ------------------------------------------------------------ |
+| scrollTo      | 滚动到一组特定坐标 | (options: ScrollToOptions | number, yCoord?: number) => void |
+| setScrollSite | 设置滚动条的距离   | (scrollLeft: number, axis: 'x' | 'y') => void                |
+| thumbColor    | 设置滚动条的颜色   | (color: string) => void                                      |
+| destroy       | 销毁绑定事件等     | () => void                                                   |

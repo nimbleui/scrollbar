@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onBeforeUnmount } from 'vue';
+import { reactive, ref, onBeforeUnmount, onMounted, nextTick } from 'vue';
 import { scrollbar } from "@nimble-ui/scrollbar"
 
 defineOptions({ name: 'move' });
@@ -44,11 +44,15 @@ setTimeout(() => {
 const warpRef = ref<HTMLElement>();
 const contentRef = ref<HTMLElement>();
 const getEl = () => warpRef.value;
-const { destroy } = scrollbar(getEl, {
+const { destroy, setScrollSite } = scrollbar(getEl, {
   content: () => contentRef.value!,
   onScroll(data) {
     console.log(data);
   },
+})
+
+onMounted(() => {
+  setScrollSite(20)
 })
 
 const warpRefX = ref<HTMLElement>()

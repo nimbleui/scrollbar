@@ -1,4 +1,4 @@
-import { GAP, ElementType, type ScrollbarBarInfo, type ScrollOptions } from "@nimble-ui/common";
+import { GAP, type ElementType, type ScrollbarBarInfo, type ScrollOptions } from "@nimble-ui/common";
 import { isFunctionOrValue } from "@nimble-ui/utils";
 import { computeSize } from "./computeSize";
 import { handleElement } from "./handleElement";
